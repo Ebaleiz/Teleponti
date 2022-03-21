@@ -1,49 +1,55 @@
+import telegram
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
-
 import PySimpleGUI as sg
 
 sg.theme('DarkGray')   # Add a touch of color
 # All the stuff inside your window.
 layout = [  [sg.Text('Invia il tuo messaggio:')],
             [sg.Multiline(key='text', size=(50, 20), no_scrollbar=True)],
-            [sg.Button('Invia'), sg.Button('Immagine')] ]
+            [sg.Button('Invia'), sg.Input(key='File'), sg.FileBrowse(), sg.Button('Immagine')] ]
 
 
 error = [ [sg.Text('ERRORE')] ]
 
 
 # Create the Window
-window = sg.Window('Teleponti', layout)
+window = sg.Window('Teleponti', layout, icon='icona.ico')
 
+TELEGRAM_BOT_TOKEN = '5110232242:AAFcZLSungEdAm-VPMnkt5WkYtsq5JN9ccI'
+TELEGRAM_CHAT_ID = '-769014460'
 
-while True:
-    event, values=window.read()
-    testo=""
-    if event=='Invia':
-        for i in values['text']:
-            testo=testo+i
-        testo=testo.strip()
-        if testo=="":
-            sg.popup('ERRORE')
-        else:
-            print('You entered: ',testo)
-    if event == sg.WIN_CLOSED:
-        break
-window.close()
-
-def hello(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text(f'Hello {update.effective_user.first_name}')
+def start(update: Update, context: CallbackContext) -> None:
+    bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
+    while True:
+        event,values=window.read()
+        testo=""
+        img=""
+        if event=='Invia':
+            for i in values['text']:
+                testo=testo+i
+            testo=testo.strip()
+            if testo=="":
+                sg.popup('ERRORE')
+            else:
+                bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=testo)
+        if event == 'Immagine':
+            for y in values['File']:
+                img=img+y
+            img_test=img[-3:]
+            if img_test!='png':
+                sg.popup('ERRORE, SOLO PNG')
+            else:
+                bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(img, 'rb'))
+        if event == sg.WIN_CLOSED:
+            break
+    window.close()
+    
 
 
 updater = Updater('5110232242:AAFcZLSungEdAm-VPMnkt5WkYtsq5JN9ccI')
 
-updater.dispatcher.add_handler(CommandHandler('hello', hello))
-
-def sent_messages(update, context):
-    chat_id = update.effective_chat.id
-    update.message.reply_text("start")
-    print("start called from chat with id = {}".format(chat_id))
+updater.dispatcher.add_handler(CommandHandler('start', start))
 
 updater.start_polling()
 updater.idle()
