@@ -30,17 +30,25 @@ def start(update: Update, context: CallbackContext) -> None:
                 testo=testo+i
             testo=testo.strip()
             if testo=="":
-                sg.popup('ERRORE')
+                sg.popup('ERRORE: Nessun Messaggio inserito', icon='icona.ico')
             else:
-                bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=testo)
+                try:
+                    bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=testo)
+                except:
+                    sg.popup('ERRORE: Problema di rete', icon='icona.ico')
         if event == 'File':
             for y in values['File']:
                 img=img+y
             img_test=img[-3:]
-            if img_test!='png':
-                sg.popup('ERRORE, SOLO PNG')
+            if img_test=='':
+                sg.popup('ERRORE: Nessuna immagine inserita', icon='icona.ico')
+            elif img_test!='png':
+                sg.popup('ERRORE: Solo PNG', icon='icona.ico')
             else:
-                bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(img, 'rb'))
+                try:
+                    bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(img, 'rb'))
+                except:
+                    sg.popup('ERRORE: Problema di rete', icon='icona.ico')
         if event == sg.WIN_CLOSED:
             break
     window.close()
