@@ -7,7 +7,7 @@ sg.theme('DarkGray')   # Add a touch of color
 # All the stuff inside your window.
 layout = [  [sg.Text('Invia il tuo messaggio:')],
             [sg.Multiline(key='text', size=(50, 20), no_scrollbar=True)],
-            [sg.Button('Invia'), sg.Input(key='File'), sg.FileBrowse(), sg.Button('Immagine')] ]
+            [sg.Button('Invia'), sg.Input(key='File', visible=False, enable_events=True), sg.FileBrowse('Immagine')] ]
 
 
 error = [ [sg.Text('ERRORE')] ]
@@ -33,7 +33,7 @@ def start(update: Update, context: CallbackContext) -> None:
                 sg.popup('ERRORE')
             else:
                 bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=testo)
-        if event == 'Immagine':
+        if event == 'File':
             for y in values['File']:
                 img=img+y
             img_test=img[-3:]
