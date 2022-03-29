@@ -16,7 +16,7 @@ error = [ [sg.Text('ERRORE')] ]
 # Create the Window
 window = sg.Window('Teleponti', layout, icon='icona.ico')
 
-TELEGRAM_BOT_TOKEN = '5110232242:AAFcZLSungEdAm-VPMnkt5WkYtsq5JN9ccI'
+TELEGRAM_BOT_TOKEN = 'TOKEN'
 TELEGRAM_CHAT_ID = '-769014460'
 
 def start(update: Update, context: CallbackContext) -> None:
